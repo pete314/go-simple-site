@@ -7,7 +7,14 @@ package main
 
 import(
 	"gopkg.in/macaron.v1"
+	"strings"
+	"encoding/json"
 )
+
+//Reverse json model
+type ReverseModel struct{
+	Reverse string
+}
 
 func main(){
 	m := macaron.Classic()
@@ -19,8 +26,18 @@ func main(){
 	})
 
 	//Reverse endpoint
-	m.Get("/reverse/:str", func(ctx *macaron.Context) string {
-		return reverseString(ctx.Params(":str"))
+	m.Get("/reverse/:str([\\w]+)/:type([\\w]+)", func(ctx *macaron.Context) string {
+		reversedStr := reverseString(ctx.Params(":str"))
+		responseType := ctx.Params(":type")
+
+		//Handle json response
+		if strings.Compare(string("json"), responseType) == 0{
+			if b, err := json.Marshal(&ReverseModel{reversedStr}); err == nil{
+				return string(b[:])
+			}
+		}
+
+		return reversedStr
 	})
 
 	m.Run()
