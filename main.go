@@ -32,8 +32,8 @@ func main(){
 
 		//Handle json response
 		if strings.Compare(string("json"), responseType) == 0{
-			if b, err := json.Marshal(&ReverseModel{reversedStr}); err == nil{
-				return string(b[:])
+			if s := toJson(reversedStr); len(s) > 0{
+				return s
 			}
 		}
 
@@ -51,3 +51,13 @@ func reverseString(str string) string {
 	}
 	return string(runes)
 }
+
+//Convert struct to json
+func toJson(str string) string{
+	if b, err := json.Marshal(&ReverseModel{str}); err == nil{
+		return string(b[:])
+	}
+
+	return ""
+}
+
