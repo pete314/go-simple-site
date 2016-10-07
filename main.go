@@ -13,11 +13,24 @@ func main(){
 	m := macaron.Classic()
 	m.Use(macaron.Renderer())
 
+	//Default route
 	m.Get("/", func(ctx *macaron.Context) {
-		//ctx.Data["Name"] = "jeremy"
 		ctx.HTML(200, "index") // 200 is the response code.
 	})
 
+	//Reverse endpoint
+	m.Get("/reverse/:str", func(ctx *macaron.Context) string {
+		return reverseString(ctx.Params(":str"))
+	})
 
 	m.Run()
+}
+
+//Reverse string
+func reverseString(str string) string {
+	runes := []rune(str)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
 }
